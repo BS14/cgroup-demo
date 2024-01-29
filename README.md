@@ -24,16 +24,30 @@ $ echo $$ > /sys/fs/cgroup/demo/cgroup.procs
 # Running a memory hungry application
 ```
 import time
+
+# Open /dev/urandom as a binary file
 f = open("/dev/urandom", "rb")
+
+# Initialize an empty byte string
 data = b""
 
+# Counter for iteration
 i = 0
+
+# Infinite loop to read 10MB chunks from /dev/urandom
 while True:
+    # Read a 10MB chunk from /dev/urandom
     chunk = f.read(10000000)  # 10MB
+
+    # If no more data can be read, break out of loop
     if not chunk:
         break
+    
+    # Concatenate the chunk to the data variable
     data += chunk
     i += 1
+
+    # Print cumulative size in MB
     print(f"{i * 10}MB")
     time.sleep(5)
 
@@ -44,4 +58,9 @@ Run the above python script. After the memory limit has been reached, the proces
 
 ```
 $ grep oom /var/log/kern.log
+```
+
+# Cleaning up
+```
+$ rmdir /sys/fs/cgroup/demo/
 ```
